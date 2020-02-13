@@ -19,4 +19,17 @@ public class Labyrinthe {
         }
         return null;
     }
+
+
+    public int getLargeur() {
+        return largeur;
+    }
+
+    public int getLongueur() {
+        return longueur;
+    }
+
+    public int getPoidMax() {
+        return poidMax;
+    }
 }

@@ -1,3 +1,5 @@
+package model;
+
 public class Labyrinthe {
     private int largeur;
     private int longueur;
@@ -10,6 +12,11 @@ public class Labyrinthe {
         this.poidMax = poidMax;
 
         map = new Case[longueur][largeur];
+        for (int y = 0; y < largeur; y++) {
+            for (int x = 0; x < longueur; x++) {
+                map[x][y] = new Case(x, y, this);
+            }
+        }
     }
 
     public Case get(int x, int y){

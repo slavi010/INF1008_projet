@@ -8,7 +8,7 @@ public class menu {
         Scanner scan =new Scanner(System.in);
     }
     private void setNum() {
-        System.out.println("Veuilliez entrer un chiffre positif ");
+        System.out.println("Veuilliez entrer un chiffre entier et  positif ");
         number = scan.nextInt();
     }
     public int getnumber()
@@ -19,7 +19,7 @@ public class menu {
             setNum();
             if(number>0)
             {
-                bool=!bool;
+                bool=false;
             }
         }
     return number;

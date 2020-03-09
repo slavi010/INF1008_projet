@@ -1,13 +1,17 @@
 package main;
-import model.*;
-import vue.*;
+
+//import model.*;
+//import vue.*;
 import java.util.*;
 
 public class main {
-    static void main(String[] args){
+    public static void main(String[] args){
+        menu test = new menu();
+        int[] storage=new int[2];
+        String localisation="";
             int choice;
             boolean bool=true;
-            while(true) {
+            while(bool) {
                 Scanner scan = new Scanner(System.in);
                 try {
                     System.out.println("1-Généré le labyrinthe");
@@ -18,6 +22,10 @@ public class main {
                     {
                         case 1:
                         {
+                            localisation="longeur";
+                            storage[0]=test.getnumber(localisation);
+                            localisation="largeur";
+                            storage[1]=test.getnumber(localisation);
 
                             break;
                         }
@@ -27,6 +35,7 @@ public class main {
                         }
                         case 3:
                         {
+                            bool=!bool;
                             break;
                         }
                         default:

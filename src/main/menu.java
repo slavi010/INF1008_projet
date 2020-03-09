@@ -5,19 +5,20 @@ public class menu {
     Scanner scan;
     public menu()
     {
-        Scanner scan =new Scanner(System.in);
+        scan =new Scanner(System.in);
     }
-    private void setNum() {
-        System.out.println("Veuilliez entrer un chiffre entier et  positif ");
+    private void setNum(String localisation) {
+        String location=localisation;
+        System.out.println("Veilliez entrer un chiffre entier et positif pour la "+location);
         number = scan.nextInt();
     }
-    public int getnumber()
+    public int getnumber(String localisation)
     {
         boolean bool=true;
         while(bool)
         {
-            setNum();
-            if(number>0)
+            setNum(localisation);
+            if(number>0&&number<100)
             {
                 bool=false;
             }

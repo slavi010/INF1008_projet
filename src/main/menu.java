@@ -1,28 +1,27 @@
 package main;
-import java.util.*;
+
+import java.util.Scanner;
+
 public class menu {
     private int number;
     Scanner scan;
+
     public menu()
     {
-        scan =new Scanner(System.in);
+        Scanner scan = new Scanner(System.in);
     }
-    private void setNum(String localisation) {
-        String location=localisation;
-        System.out.println("Veilliez entrer un chiffre entier et positif pour la "+location);
+
+    private void setNum() {
+        System.out.println("Veuilliez entrer un chiffre entier et  positif : ");
         number = scan.nextInt();
     }
-    public int getnumber(String localisation)
+
+    public int getnumber()
     {
-        boolean bool=true;
-        while(bool)
+        do
         {
-            setNum(localisation);
-            if(number>0&&number<100)
-            {
-                bool=false;
-            }
-        }
+            setNum();
+        }while(number<=0);
     return number;
     }
 }

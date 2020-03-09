@@ -51,6 +51,6 @@ public class Interface extends JFrame{
     }
 
     public static void main(String[] args){
-        Interface i = new Interface("Labyrinthe", 8, 8);
+        Interface i = new Interface("Labyrinthe", 7, 7);
     }
 }

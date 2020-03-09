@@ -8,19 +8,20 @@ public class menu {
 
     public menu()
     {
-        Scanner scan = new Scanner(System.in);
+        scan = new Scanner(System.in);
     }
 
-    private void setNum() {
-        System.out.println("Veuilliez entrer un chiffre entier et  positif : ");
+    private void setNum(String localisation) {
+        System.out.println("Veuilliez entrer un chiffre entier et positif pour la "+localisation+" :");
+
         number = scan.nextInt();
     }
 
-    public int getnumber()
+    public int getnumber(String localisation)
     {
         do
         {
-            setNum();
+            setNum(localisation);
         }while(number<=0);
     return number;
     }

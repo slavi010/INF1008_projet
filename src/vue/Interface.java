@@ -11,7 +11,7 @@ public class Interface extends JFrame{
 
     public Interface(String name, int longeur, int largeur){
         this.setTitle(name);
-        this.setSize(longeur*50, largeur*50);
+        this.setSize(longeur*45, largeur*45);
         this.setResizable(true);
 
         initComposant(longeur, largeur);

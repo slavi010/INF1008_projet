@@ -7,8 +7,8 @@ import java.util.*;
 public class main {
     public static void main(String[] args) {
         menu test = new menu();
-        int[] storage = new int[2];
-        String localisation = "";
+        int[] storage = new int[3];
+        String localisation;
         int choice;
         boolean bool = true;
         Interface i;
@@ -22,21 +22,24 @@ public class main {
                 choice = scan.nextInt();
                 switch (choice) {
                     case 1: {
-                        localisation = "longeur";
+                        localisation = "la longeur";
                         storage[0] = test.getnumber(localisation);
-                        localisation = "largeur";
+                        localisation = "la largeur";
                         storage[1] = test.getnumber(localisation);
-                        Minotaur= new Labyrinthe(storage[1],storage[0],10);
-                        i = new Interface("Labyrinthe", storage[0], storage[1]);
+                        localisation = "le poid maximal du labyrithe";
+                        storage[2] =test.getnumber(localisation);
+                        Minotaur= new Labyrinthe(storage[1],storage[0],storage[2]);
+                        System.out.println("Labyrinthe a été créé avec succès.");
                         break;
                     }
                     case 2: {
                      //Test pour l'affichage. Evité de faire 100x100 sur un petit processeur.
-                        i = new Interface("Labyrinthe", storage[0], storage[1]);
+                        //i = new Interface("Labyrinthe", storage[0], storage[1]);
                         break;
                     }
                     case 3: {
-                        bool = !bool;
+                        bool = false;
+                        scan.close();
                         break;
                     }
                     default: {
@@ -48,10 +51,8 @@ public class main {
 
             } catch (Exception e) {
                 System.out.println("Une erreur c'est produit.");
-            } finally {
-
             }
         }
-
+        System.out.println("L'application s'est terminée avec succès");
     }
 }

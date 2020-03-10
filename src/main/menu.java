@@ -12,8 +12,7 @@ public class menu {
     }
 
     private void setNum(String localisation) {
-        System.out.println("Veuilliez entrer un chiffre entier et positif pour la "+localisation+" :");
-
+        System.out.println("Veuilliez entrer un chiffre entier et positif pour "+localisation+" :");
         number = scan.nextInt();
     }
 

@@ -1,10 +1,7 @@
 package main;
 
-//import model.*;
-
-import model.Labyrinthe;
+import model.*;
 import vue.*;
-
 import java.util.*;
 
 public class main {
@@ -30,10 +27,12 @@ public class main {
                         localisation = "largeur";
                         storage[1] = test.getnumber(localisation);
                         Minotaur= new Labyrinthe(storage[1],storage[0],10);
-                       // i = new Interface("Labyrinthe", storage[0], storage[1]);
+                        i = new Interface("Labyrinthe", storage[0], storage[1]);
                         break;
                     }
                     case 2: {
+                     //Test pour l'affichage. Evité de faire 100x100 sur un petit processeur.
+                        i = new Interface("Labyrinthe", storage[0], storage[1]);
                         break;
                     }
                     case 3: {
@@ -50,7 +49,7 @@ public class main {
             } catch (Exception e) {
                 System.out.println("Une erreur c'est produit.");
             } finally {
-                    System.out.println("Allo!");
+
             }
         }
 

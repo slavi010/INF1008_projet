@@ -2,7 +2,7 @@ package main;
 
 import model.*;
 import vue.*;
-import java.util.*;
+import java.util.Scanner;
 
 public class main {
     public static void main(String[] args) {

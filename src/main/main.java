@@ -1,6 +1,6 @@
 package main;
 
-import model.*;
+import model.Labyrinthe;
 import vue.*;
 import java.util.Scanner;
 
@@ -12,7 +12,7 @@ public class main {
         int choice;
         boolean bool = true;
         Interface i;
-        Labyrinthe Minotaur;
+        Labyrinthe minotaur = null;
         while (bool) {
             Scanner scan = new Scanner(System.in);
             try {
@@ -28,13 +28,13 @@ public class main {
                         storage[1] = test.getnumber(localisation);
                         localisation = "le poid maximal du labyrithe";
                         storage[2] =test.getnumber(localisation);
-                        Minotaur= new Labyrinthe(storage[1],storage[0],storage[2]);
+                        minotaur= new Labyrinthe(storage[1], storage[0], 1, storage[2]);
                         System.out.println("Labyrinthe a été créé avec succès.");
                         break;
                     }
                     case 2: {
                      //Test pour l'affichage. Evité de faire 100x100 sur un petit processeur.
-                        //i = new Interface("Labyrinthe", storage[0], storage[1]);
+                        i = new Interface("Labyrinthe", storage[0], storage[1], minotaur);
                         break;
                     }
                     case 3: {
@@ -50,7 +50,7 @@ public class main {
 
 
             } catch (Exception e) {
-                System.out.println("Une erreur c'est produit.");
+                e.printStackTrace();
             }
         }
         System.out.println("L'application s'est terminée avec succès");

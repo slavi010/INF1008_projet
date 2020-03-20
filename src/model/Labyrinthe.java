@@ -1,42 +1,64 @@
 package model;
 
-public class Labyrinthe {
-    private int largeur;
-    private int longueur;
-    private int poidMax;
-    private Case[][] map;
+import model.data.Map;
 
-    public Labyrinthe(int largeur, int longueur, int poidMax) {
-        this.largeur = largeur;
-        this.longueur = longueur;
-        this.poidMax = poidMax;
+/**
+ * Le labyrinthe.
+ */
+public class Labyrinthe implements Observable{
+    /**
+     * La {@link Map} de liaisons assossié au {@link Labyrinthe}.
+     */
+    private Map map;
 
-        map = new Case[longueur][largeur];
-        for (int y = 0; y < largeur; y++) {
-            for (int x = 0; x < longueur; x++) {
-                map[x][y] = new Case(x, y, this);
-            }
-        }
+    private Observer observer;
+
+    /**
+     * Crée une instance de {@link Labyrinthe} de dimension {@code longueur}
+     * et {@code largeur}.
+     * Les liaisons entre les cases sont générées à partire de valeurs aléatoire
+     * bornées entre {@code min} et {@code max}.
+     *
+     * @param longueur La longueur du nouveau {@link Labyrinthe}.
+     * @param largeur  la largeur du nouveau {@link Labyrinthe}.
+     * @param min      Le minimum des valeurs aléatoires pour les liaison (inclue).
+     * @param max      Le maximum des valeurs aléatoires pour les liaison (exclue).
+     * @throws IllegalArgumentException Si la longeur ou la largeur est inférieure ou égale à zéro.
+     */
+    public Labyrinthe(int longueur, int largeur, int min, int max) {
+        map = new Map(longueur, largeur);
+        map.metDesValeursAleatoires(min, max);
     }
 
-    public Case get(int x, int y){
-        if (x >= 0 && x < longueur &&
-                y >= 0 && y < largeur){
-            return map[x][y];
-        }
-        return null;
+    /**
+     * Retourne la {@link Case} du l'{@link Labyrinthe} de coordonées {@code x}
+     * et {@code y}
+     * @param x La coordonées x de la case souhaitée.
+     * @param y La coordonées y de la case souhaitée.
+     * @return la {@link Case} correspondantes aux coordonées
+     * @throws IllegalArgumentException Si au moins une des coordonées x ou y est invalide.
+     */
+    public Case getCase(int x, int y){
+        map.isValideXY(x, y);
+        return new Case(this, x, y);
     }
 
-
-    public int getLargeur() {
-        return largeur;
+    public Map getMap() {
+        return map;
     }
 
-    public int getLongueur() {
-        return longueur;
+    @Override
+    public void sendEvent() {
+        assert observer != null;
+        observer.onEvent();
     }
 
-    public int getPoidMax() {
-        return poidMax;
+    @Override
+    public void setObserver(Observer observer) {
+        this.observer = observer;
     }
+
+    /*
+    TODO algo de PRIM
+     */
 }

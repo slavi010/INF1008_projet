@@ -5,7 +5,7 @@ import model.data.Map;
 /**
  * Une case du {@link Labyrinthe}.
  */
-public class Case {
+public class Case implements Comparable<Case> {
     /**
      * Le {@link Labyrinthe} au quel est rataché cette case.
      */
@@ -35,7 +35,7 @@ public class Case {
     /**
      * Retourne la {@link Case} voisine dans la {@code direction} donnée.
      *
-     * @param direction La direction de la {@link Case} voisine
+     * @param direction La direction de la {@link Case} voisine.
      * @return La {@link Case} voisine.
      * @throws NullPointerException Si la {@link Case} n'a pas de voisin dans la {@code direction} donnée.
      */
@@ -84,6 +84,22 @@ public class Case {
     }
 
     /**
+     * Retourne la liaison entre cette instance et la {@link Case} voisine
+     * dans la {@code direction} donnée.
+     *
+     * @param direction La direction de la liaison
+     * @return La {@link Liaison} entre les deux {@link Case}.
+     * @throws NullPointerException     Si la {@link Case} n'a pas de voisin dans la {@code direction} donnée.
+     * @throws IllegalArgumentException Si la {@code direction} donnée est inconnue.
+     */
+    public Liaison getLiaison(Direction direction) {
+        siVoisinExiste(direction);
+        Map map = labyrinthe.getMap();
+
+        return new Liaison(this, getVoisin(direction), getValeurLiaison(direction));
+    }
+
+    /**
      * Lance une exception si la {@link Case} voisine n'exista pas
      * dans la {@code direction}
      *
@@ -109,6 +125,78 @@ public class Case {
                     throw new NullPointerException("Cette case n'a pas de voisin a GAUCHE");
                 break;
         }
+    }
+
+    /**
+     * @param obj La {@link Case} à tester.
+     * @return Vrai si {@code obj} est une {@link Case}, qu'il a le même {@link Labyrinthe}
+     * et a les même coordonnées {@code x} et {@code y} que cette instance.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        // si obj n'est pas une Case
+        if (!(obj instanceof Case))
+            return false;
+
+        Case c = (Case) obj;
+
+        // on fait le test de comparaison.
+        return this.labyrinthe == c.labyrinthe &&
+                this.x == c.x &&
+                this.y == c.y;
+    }
+
+    /**
+     * Retourne la position x de la case.
+     *
+     * @return La position x de la case.
+     */
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * Retourne la position y de la case.
+     *
+     * @return La position y de la case.
+     */
+    public int getY() {
+        return y;
+    }
+
+    /**
+     * Retourne 0 si cette instance et {@code c} ont les même coordonnées
+     * et les deux {@link Case} font parti du même labyrinthe.
+     * Retourne -1 si la coordonnée {@code y} de cette instance est inférieur au {@code y} de {@code c}.
+     * Si les {@code y} sont égaux, fait de même avec les coordonnées {@code x}.
+     * Retourn 1 sinon.
+     *
+     * @param c La {@link Case} avec la quelle comparer.
+     * @return -1|0|1
+     */
+    @Override
+    public int compareTo(Case c) {
+        // même coordonnées
+        if (this.equals(c))
+            return 0;
+        else if (this.getY() < c.getY() ||
+                (this.getY() == c.getY()
+                        && this.getX() < c.getX()))
+            return -1;
+        return 1;
+    }
+
+    @Override
+    public String toString() {
+        return "{\"x\":" + x + ", " +
+                "\"y\":" + y + "}";
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = labyrinthe.hashCode()*31 + x;
+        hash = hash*31 + y;
+        return hash;
     }
 
     /**

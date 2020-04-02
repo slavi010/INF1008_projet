@@ -2,6 +2,8 @@ package main;
 
 import model.Labyrinthe;
 import vue.*;
+
+import java.sql.Time;
 import java.util.Scanner;
 
 public class main {
@@ -17,7 +19,7 @@ public class main {
             Scanner scan = new Scanner(System.in);
             try {
                 System.out.println("1-Généré le labyrinthe");
-                System.out.println("2-Afficher le labyrinthe");
+                System.out.println("2-Afficher le labyrinthe dans une fenêtre (ne pas faire si taille > 100x100)");
                 System.out.println("3-Quitter");
                 choice = scan.nextInt();
                 switch (choice) {
@@ -35,6 +37,11 @@ public class main {
                     case 2: {
                      //Test pour l'affichage. Evité de faire 100x100 sur un petit processeur.
                         i = new Interface("Labyrinthe", storage[0], storage[1], minotaur);
+                        System.out.println("Interface chargé");
+                        Thread.sleep(1);
+                        System.out.println("Algo de PRIM...");
+                        minotaur.prim();
+                        System.out.println("Algo de PRIM fini");
                         break;
                     }
                     case 3: {

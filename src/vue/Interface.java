@@ -23,7 +23,7 @@ public class Interface extends JFrame{
         initComposant(longeur, largeur);
         this.setContentPane(container);
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
 
         labyrinthe.setObserver((liaison) -> {

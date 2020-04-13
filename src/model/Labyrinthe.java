@@ -4,7 +4,10 @@ import model.data.Map;
 import model.observer.Observable;
 import model.observer.Observer;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +30,8 @@ public class Labyrinthe implements Observable {
     private Map map;
 
     private Observer observer;
+
+    private HashSet<Liaison> liaisonsSolution = null;
 
     private boolean debug = false;
 
@@ -90,8 +95,6 @@ public class Labyrinthe implements Observable {
         try {
             if (this.debug)
                 Thread.sleep(1000, 0);
-            else
-                Thread.sleep(0, 10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -105,16 +108,13 @@ public class Labyrinthe implements Observable {
     /**
      * Applique l'algo de PRIM minimal.
      */
-    public HashSet<Liaison> prim(boolean debug) {
-        this.debug = debug;
-
-
+    public HashSet<Liaison> prim() {
         // liaisons rejetées (en double)
         HashSet<Liaison> liaisonsRejetees = new HashSet<>();
         // liaisons possibles reliant une Case déjà vue (solution) et une non visité
         HashSet<Liaison> liaisonsPossible = new HashSet<>();
         // les liaisons du future labyrunthe
-        HashSet<Liaison> liaisonsSolution = new HashSet<>();
+        liaisonsSolution = new HashSet<>();
         HashSet<Case> casesSolutions = new HashSet<>();
 
         Case caseToAdd = getCase(0, 0);
@@ -176,68 +176,82 @@ public class Labyrinthe implements Observable {
 
         }
 
-//        for (Liaison liaison : liaisonsRejetees)
-//        System.out.println(liaisonsSolution);
-
         return liaisonsSolution;
     }
 
     /**
      * Sauvegarde sous un format visuel le labyrunthe avec comme mur, les liaisons données.
      */
-    public void saveToFile(HashSet<Liaison> liaisons) {
+    public void saveToFile() {
+        FileWriter myWriter = null;
+        try {
+            myWriter = new FileWriter("solution.txt");
+            myWriter.write(this.toString());
+            myWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
+    public String toString() {
+        if (liaisonsSolution == null)
+            throw new NullPointerException("Il n'y a pas de solution trouvée, avez-vous lancé l'algo de PRIM ?");
+
+
         // le labyrinthe en chaîne de caractères
         StringBuilder str = new StringBuilder();
 
         // grille des liaisons
-        Liaison[][] tab = new Liaison[getMap().getLargeur()*2 + 1][];
-        for (int y = 0; y < getMap().getLargeur()*2 + 1; y++) {
-            tab[y] = new Liaison[getMap().getLongueur()*2 + 1];
+        Liaison[][] tab = new Liaison[getMap().getLargeur()*2 - 1][];
+        for (int y = 0; y < getMap().getLargeur()*2 - 1; y++) {
+            tab[y] = new Liaison[getMap().getLongueur()*2 - 1];
         }
 
-//        String[]
-
-
-
         // on parcour les liaison puis les ajoutons dans le tableau
-        Iterator<Liaison> liaisonIterator = liaisons.iterator();
+        Iterator<Liaison> liaisonIterator = liaisonsSolution.iterator();
         Liaison liaisonTmp;
         while (liaisonIterator.hasNext()) {
             liaisonTmp = liaisonIterator.next();
-            tab[liaisonTmp.getCoordY()][liaisonTmp.getCoordY()] = liaisonTmp;
+            int y_tmp = liaisonTmp.getCoordY();
+            int x_tmp = liaisonTmp.getCoordX();
+            tab[y_tmp][x_tmp] = liaisonTmp;
         }
 
-        for (int y = 0; y < getMap().getLongueur() * 2; y++) {
-            for (int x = 0; x < getMap().getLargeur() * 2; x++) {
+        for (int y = 0; y < getMap().getLongueur() * 2 - 1; y++) {
+            for (int x = 0; x < getMap().getLargeur() * 2 - 1; x++) {
 
 
                 if (x % 2 == 0 && y % 2 == 0) {
                     // une case
                     str.append(caseCaractereEnFonctionDesLiaisons(
-                            exsite(x, y - 2, tab),
-                            exsite(x + 2, y, tab),
-                            exsite(x, y + 2, tab),
-                            exsite(x - 2, y, tab)
+                            exsite(x, y - 1, tab),
+                            exsite(x + 1, y, tab),
+                            exsite(x, y + 1, tab),
+                            exsite(x - 1, y, tab)
                     ));
 
                 } else if (x % 2 == 1 && y % 2 == 0) {
                     // liaison horizontale
                     if (exsite(x, y, tab))
                         str.append((char) 0x2550);
+                    else
+                        str.append(" ");
                 } else if (x % 2 == 0) {
                     // liaison verticale
                     if (exsite(x, y, tab))
                         str.append((char) 0x2551);
-                } else {
+                    else
+                        str.append(" ");
+                }else {
                     str.append(" ");
                 }
+                str.append(" ");
             }
             str.append("\n");
         }
-
-
-        System.out.println(str.toString());
-        File file = new File("../test.txt");
+        return str.toString();
     }
 
     /**
@@ -254,10 +268,6 @@ public class Labyrinthe implements Observable {
         return false;
     }
 
-    /**
-     *
-     * @return
-     */
     private String caseCaractereEnFonctionDesLiaisons(
             boolean haut,
             boolean droite,
@@ -307,11 +317,22 @@ public class Labyrinthe implements Observable {
                     if (gauche)
                         return String.valueOf ((char) 0x2550); // 0001
                     else
-                        return " "; // 0000
+                        return "?"; // 0000
                 }
             }
         }
     }
 
+    public boolean isDebug() {
+        return debug;
+    }
 
+    public Labyrinthe setDebug(boolean debug) {
+        this.debug = debug;
+        return this;
+    }
+
+    public HashSet<Liaison> getLiaisonsSolution() {
+        return liaisonsSolution;
+    }
 }

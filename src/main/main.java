@@ -24,10 +24,12 @@ public class main {
             Scanner scan = new Scanner(System.in);
             try {
                 System.out.println( "\n\n" +
-                        "1-Généré le labyrinthe (pseudo matrice d'adjacence)\n" +
-                        "2-Afficher le labyrinthe dans une fenêtre puis lance Prim (ne pas faire si taille > 100x100)\n" +
-                        "3-Générer un fichier visuel du labyrinthe après algo de Prim\n" +
-                        "4-Quitter\n");
+                        "1 - Générer le labyrinthe (pseudo matrice d'adjacence)\n" +
+                        "2 - Afficher le labyrinthe dans une fenêtre (ne pas faire si taille > 100x100)\n" +
+                        "3 - Lancer algo de PRIM\n" +
+                        "4 - Afficher la solution de PRIM dans la console\n" +
+                        "5 - Enregistrer la solution de PRIM dans le fichier \"solution.txt\"\n" +
+                        "6 - Quitter\n");
                 choice = scan.nextInt();
                 switch (choice) {
                     case 1: {
@@ -53,24 +55,11 @@ public class main {
 
                             // Le labyrinthe existe bien
 
+                            minotaur.setDebug(debug == 2);
+
                             // On supprime la fenêtre déjà existante
                             if (i != null)
                                 i.dispatchEvent(new WindowEvent(i, WindowEvent.WINDOW_CLOSED));
-
-
-                            System.out.println("Algo de PRIM...");
-
-                            if (debug == 2){
-                                // mode debug
-                                minotaur.prim(true);
-                            }else{
-                                // mode normal
-                                minotaur.prim(false);
-                            }
-                            System.out.println("Algo de PRIM fini");
-
-
-
                         } else {
                             // Le labyrinthe n'a pas encore été généré !
                             throw new NullPointerException();
@@ -78,15 +67,36 @@ public class main {
                         break;
                     }
                     case 3: {
-                        if (minotaur != null)
-                            minotaur.saveToFile(minotaur.prim(false));
+                        if (minotaur != null){
+                            System.out.println("Algo de PRIM...");
+
+                            minotaur.prim();
+
+                            System.out.println("Algo de PRIM fini");
+                        }
                         else {
                             // Le labyrinthe n'a pas encore été généré !
                             throw new NullPointerException();
                         }
                         break;
+                    }case 4: {
+                        if (minotaur != null && minotaur.getLiaisonsSolution() != null)
+                            System.out.println(minotaur.toString());
+                        else {
+                            // Le labyrinthe n'a pas encore été généré ou il n'y a pas de solutiob !
+                            throw new NullPointerException();
+                        }
+                        break;
+                    }case 5: {
+                        if (minotaur != null && minotaur.getLiaisonsSolution() != null)
+                            minotaur.saveToFile();
+                        else {
+                            // Le labyrinthe n'a pas encore été généré ou il n'y a pas de solutiob !
+                            throw new NullPointerException();
+                        }
+                        break;
                     }
-                    case 4: {
+                    case 6: {
                         bool = false;
                         scan.close();
                         break;
@@ -99,7 +109,7 @@ public class main {
 
 
             } catch (NullPointerException e) {
-                System.err.println("Veillez générer le labyrinthe en premier !");
+                System.err.println("Veillez générer le labyrinthe / lancer l'algo de PRIM en premier !");
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -5,6 +5,11 @@ package model.data;
  */
 public class Map {
     /**
+     * Compteur d'operation
+     */
+    private static int nbOperationMap = 0;
+
+    /**
      * Données brutes de liaison.
      * - Primière dimenssion :
      * Chaque noeud de gauche à droite puis de haut en bas
@@ -158,6 +163,7 @@ public class Map {
         for (x = 0; x < longueur*largeur; x++) {
             for (y = 0; y < 2; y++) {
                 map[x][y] = (int) Math.floor((Math.random() * ((max - min) + 1)) + min);
+                nbOperationMap += 1;
             }
         }
         return this;
@@ -169,5 +175,9 @@ public class Map {
 
     public int getLargeur() {
         return largeur;
+    }
+
+    public static int getNbOperationMap() {
+        return nbOperationMap;
     }
 }

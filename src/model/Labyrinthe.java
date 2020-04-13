@@ -12,6 +12,11 @@ import java.util.HashSet;
  */
 public class Labyrinthe implements Observable {
     /**
+     *  Compteur d'operation
+     */
+    private static int nbOperationLabyrinthe = 0;
+
+    /**
      * La {@link Map} de liaisons assossié au {@link Labyrinthe}.
      */
     private Map map;
@@ -33,6 +38,7 @@ public class Labyrinthe implements Observable {
     public Labyrinthe(int longueur, int largeur, int min, int max) {
         map = new Map(longueur, largeur);
         map.metDesValeursAleatoires(min, max);
+        nbOperationLabyrinthe += map.getNbOperationMap();
     }
 
     /**
@@ -47,6 +53,10 @@ public class Labyrinthe implements Observable {
     public Case getCase(int x, int y) {
         map.isValideXY(x, y);
         return new Case(this, x, y);
+    }
+
+    public static int getNbOperationLabyrinthe() {
+        return nbOperationLabyrinthe;
     }
 
     public Map getMap() {
@@ -104,8 +114,7 @@ public class Labyrinthe implements Observable {
                     }
 
                     // si la liaison n'a pas encore été rejeté
-                    else if (!liaisonsRejetees.contains(liaisonTmp) && !liaisonsSolution.contains(liaisonTmp))
-                    {
+                    else if (!liaisonsRejetees.contains(liaisonTmp) && !liaisonsSolution.contains(liaisonTmp)) {
                         // on l'ajoute dans les liaisons possibles
                         liaisonsPossible.add(liaisonTmp);
                     }
@@ -113,6 +122,7 @@ public class Labyrinthe implements Observable {
                 } catch (Exception e) {
                     // pass
                 }
+                nbOperationLabyrinthe += 1;
             }
 
             // s'il y a encore des liaison possible
@@ -141,5 +151,4 @@ public class Labyrinthe implements Observable {
 
         return liaisonsSolution;
     }
-
 }

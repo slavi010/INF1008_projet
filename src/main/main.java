@@ -1,6 +1,7 @@
 package main;
 
 import model.Labyrinthe;
+import model.data.Map;
 import vue.Interface;
 
 import java.awt.event.WindowEvent;
@@ -41,6 +42,10 @@ public class main {
                         storage[2] = test.getnumber(localisation);
                         minotaur = new Labyrinthe(storage[0], storage[1], 1, storage[2]);
                         System.out.println("Labyrinthe a été créé avec succès.");
+
+                        System.out.println("Nombre d'opération : " + Map.getNbOperationMap());
+
+
                         break;
                     }
                     case 2: {
@@ -71,6 +76,7 @@ public class main {
                             System.out.println("Algo de PRIM...");
 
                             minotaur.prim();
+                            System.out.println("Nombre d'opération : " + Labyrinthe.getNbOperationLabyrinthe());
 
                             System.out.println("Algo de PRIM fini");
                         }

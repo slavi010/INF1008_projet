@@ -43,6 +43,7 @@ public class Map {
      * @throws IllegalArgumentException Si la longueur ou la largeur est inférieure ou égale à zéro.
      */
     public Map(int longueur, int largeur) {
+        nbOperationMap = 0;
         this.longueur = longueur;
         this.largeur = largeur;
         if (longueur <= 0 || largeur <= 0)

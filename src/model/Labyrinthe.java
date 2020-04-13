@@ -109,6 +109,11 @@ public class Labyrinthe implements Observable {
      * Applique l'algo de PRIM minimal.
      */
     public HashSet<Liaison> prim() {
+        if (debug)
+            System.out.println("Cela peux prendre du temps car le mode debug est activé !");
+
+        nbOperationLabyrinthe = 0;
+
         // liaisons rejetées (en double)
         HashSet<Liaison> liaisonsRejetees = new HashSet<>();
         // liaisons possibles reliant une Case déjà vue (solution) et une non visité

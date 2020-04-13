@@ -2,6 +2,7 @@ package model.data;
 
 /**
  * Stockage des données de la carte.
+ * @author Sviatoslav Besnard
  */
 public class Map {
     /**

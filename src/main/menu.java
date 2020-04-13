@@ -2,6 +2,9 @@ package main;
 
 import java.util.Scanner;
 
+/**
+ * @author Nicolas Landry
+ */
 public class menu {
     private int number;
     Scanner scan;
@@ -12,7 +15,7 @@ public class menu {
     }
 
     private void setNum(String localisation) {
-        System.out.println("Veuilliez entrer un chiffre entier et positif pour "+localisation+" :");
+        System.out.println("Veuilliez entrer "+localisation+" (>0) :");
         number = scan.nextInt();
     }
 

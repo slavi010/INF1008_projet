@@ -3,6 +3,7 @@ package model;
 
 /**
  * Cette classe est la représentation d'une {@link Liaison} entre deux {@link Case}.
+ * @author Sviatoslav Besnard
  */
 public class Liaison implements Comparable<Liaison> {
     /**
@@ -132,5 +133,35 @@ public class Liaison implements Comparable<Liaison> {
         return "{\"case1\":" + case1 + ", " +
                 "\"case2\":" + case2 + ", " +
                 "\"valeur\":" + valeur + "}";
+    }
+
+    /**
+     * Retourne la coordonnée x de la liaison si elle était plassée dans une grille.
+     * Exemple: Si cette {@link Liaison} relie deux {@link Case} (0,0) et (1,0).
+     * Elle aurai les coordonées (2,0).
+     * case - liaison - case
+     *
+     * Par rapport aux {@link Case} avec des coordonées côte à côte,
+     * ici elle on leurs coordonées multipliées par deux.
+     *
+     * @return La coordonée x de la liaison.
+     */
+    public int getCoordX(){
+        return getCase1().getX()*2 + (getCase2().getX() - getCase1().getX());
+    }
+
+    /**
+     * Retourne la coordonnée y de la liaison si elle était plassée dans une grille.
+     * Exemple: Si cette {@link Liaison} relie deux {@link Case} (0,0) et (1,0).
+     * Elle aurai les coordonées (2,0).
+     * case - liaison - case
+     *
+     * Par rapport aux {@link Case} avec des coordonées côte à côte,
+     * ici elle on leurs coordonées multipliées par deux.
+     *
+     * @return La coordonée y de la liaison.
+     */
+    public int getCoordY(){
+        return getCase1().getY()*2 + (getCase2().getY() - getCase1().getY());
     }
 }

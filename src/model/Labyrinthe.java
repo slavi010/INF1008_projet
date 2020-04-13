@@ -4,11 +4,16 @@ import model.data.Map;
 import model.observer.Observable;
 import model.observer.Observer;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+
 
 /**
  * Le labyrinthe.
+ *
+ * @author Sviatoslav Besnard
  */
 public class Labyrinthe implements Observable {
     /**
@@ -22,6 +27,8 @@ public class Labyrinthe implements Observable {
     private Map map;
 
     private Observer observer;
+
+    private boolean debug = false;
 
     /**
      * Crée une instance de {@link Labyrinthe} de dimension {@code longueur}
@@ -64,14 +71,30 @@ public class Labyrinthe implements Observable {
     }
 
     @Override
-    public void sendEvent(Liaison liaison) {
-        assert observer != null;
+    public void sendEvent(Liaison liaison, int code) {
+        if (observer != null)
+            switch (code){
+                case 1:
+                    observer.onEvent1(liaison);
+                    break;
+                case 2:
+                    observer.onEvent2(liaison);
+                    break;
+                case 3:
+                    observer.onEvent3(liaison);
+                    break;
+                case 4:
+                    observer.onEvent4(liaison);
+                    break;
+            }
         try {
-            Thread.sleep(0, 10);
+            if (this.debug)
+                Thread.sleep(1000, 0);
+            else
+                Thread.sleep(0, 10);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        observer.onEvent(liaison);
     }
 
     @Override
@@ -82,7 +105,10 @@ public class Labyrinthe implements Observable {
     /**
      * Applique l'algo de PRIM minimal.
      */
-    public HashSet<Liaison> prim() {
+    public HashSet<Liaison> prim(boolean debug) {
+        this.debug = debug;
+
+
         // liaisons rejetées (en double)
         HashSet<Liaison> liaisonsRejetees = new HashSet<>();
         // liaisons possibles reliant une Case déjà vue (solution) et une non visité
@@ -111,12 +137,16 @@ public class Labyrinthe implements Observable {
                         // (car elle connecte deux Case déjà solution)
                         liaisonsPossible.remove(liaisonTmp);
                         liaisonsRejetees.add(liaisonTmp);
+                        if (this.debug)
+                            sendEvent(liaisonTmp, 4);
                     }
-
                     // si la liaison n'a pas encore été rejeté
                     else if (!liaisonsRejetees.contains(liaisonTmp) && !liaisonsSolution.contains(liaisonTmp)) {
                         // on l'ajoute dans les liaisons possibles
                         liaisonsPossible.add(liaisonTmp);
+                        // on notifie le UI nouvelle liaison possible
+                        if (this.debug)
+                            sendEvent(liaisonTmp, 2);
                     }
 
                 } catch (Exception e) {
@@ -126,7 +156,7 @@ public class Labyrinthe implements Observable {
             }
 
             // s'il y a encore des liaison possible
-            if (!liaisonsPossible.isEmpty()){
+            if (!liaisonsPossible.isEmpty()) {
                 // recherche la prochaine liaison potentielle
                 liaisonTmp = Collections.min(liaisonsPossible, Liaison::compareTo);
 
@@ -140,8 +170,8 @@ public class Labyrinthe implements Observable {
                 liaisonsPossible.remove(liaisonTmp);
                 liaisonsSolution.add(liaisonTmp);
 
-                // on notifie le UI
-                sendEvent(liaisonTmp);
+                // on notifie le UI nouvelle liaison solution
+                sendEvent(liaisonTmp, 1);
             }
 
         }
@@ -151,4 +181,137 @@ public class Labyrinthe implements Observable {
 
         return liaisonsSolution;
     }
+
+    /**
+     * Sauvegarde sous un format visuel le labyrunthe avec comme mur, les liaisons données.
+     */
+    public void saveToFile(HashSet<Liaison> liaisons) {
+        // le labyrinthe en chaîne de caractères
+        StringBuilder str = new StringBuilder();
+
+        // grille des liaisons
+        Liaison[][] tab = new Liaison[getMap().getLargeur()*2 + 1][];
+        for (int y = 0; y < getMap().getLargeur()*2 + 1; y++) {
+            tab[y] = new Liaison[getMap().getLongueur()*2 + 1];
+        }
+
+//        String[]
+
+
+
+        // on parcour les liaison puis les ajoutons dans le tableau
+        Iterator<Liaison> liaisonIterator = liaisons.iterator();
+        Liaison liaisonTmp;
+        while (liaisonIterator.hasNext()) {
+            liaisonTmp = liaisonIterator.next();
+            tab[liaisonTmp.getCoordY()][liaisonTmp.getCoordY()] = liaisonTmp;
+        }
+
+        for (int y = 0; y < getMap().getLongueur() * 2; y++) {
+            for (int x = 0; x < getMap().getLargeur() * 2; x++) {
+
+
+                if (x % 2 == 0 && y % 2 == 0) {
+                    // une case
+                    str.append(caseCaractereEnFonctionDesLiaisons(
+                            exsite(x, y - 2, tab),
+                            exsite(x + 2, y, tab),
+                            exsite(x, y + 2, tab),
+                            exsite(x - 2, y, tab)
+                    ));
+
+                } else if (x % 2 == 1 && y % 2 == 0) {
+                    // liaison horizontale
+                    if (exsite(x, y, tab))
+                        str.append((char) 0x2550);
+                } else if (x % 2 == 0) {
+                    // liaison verticale
+                    if (exsite(x, y, tab))
+                        str.append((char) 0x2551);
+                } else {
+                    str.append(" ");
+                }
+            }
+            str.append("\n");
+        }
+
+
+        System.out.println(str.toString());
+        File file = new File("../test.txt");
+    }
+
+    /**
+     * Retourne faux si la de coordonnées {@code x} et {@code y} est null ou est hors dans un {@code tableau[y][x]}.
+     * Retourne vrai sinon.
+     *
+     * @return Vrai si non null.
+     */
+    private boolean exsite(int x, int y, Object[][] tableau) {
+        try {
+            return tableau[y][x] != null;
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private String caseCaractereEnFonctionDesLiaisons(
+            boolean haut,
+            boolean droite,
+            boolean bas,
+            boolean gauche
+    ){
+        if (haut){
+            if (droite){
+                if (bas){
+                    if (gauche)
+                        return String.valueOf ((char) 0x256C); // 1111
+                    else
+                        return String.valueOf ((char) 0x2560); // 1110
+                } else {
+                    if (gauche)
+                        return String.valueOf ((char) 0x2567); // 1101
+                    else
+                        return String.valueOf ((char) 0x255A); // 1100
+                }
+            } else {
+                if (gauche){
+                    if (bas)
+                        return String.valueOf ((char) 0x2563); // 1011
+                    else
+                        return String.valueOf ((char) 0x255D); // 1001
+                } else {
+                    return String.valueOf ((char) 0x2551); // 1000 || 1010
+                }
+            }
+        } else {
+            if (droite){
+                if (bas){
+                    if (gauche)
+                        return String.valueOf ((char) 0x2566); // 0111
+                    else
+                        return String.valueOf ((char) 0x2554); // 0110
+                } else {
+                        return String.valueOf ((char) 0x2550); // 0101 || 0100
+                }
+            } else {
+                if (bas){
+                    if (gauche)
+                        return String.valueOf ((char) 0x2557); // 0011
+                    else
+                        return String.valueOf ((char) 0x2551); // 0010
+                } else {
+                    if (gauche)
+                        return String.valueOf ((char) 0x2550); // 0001
+                    else
+                        return " "; // 0000
+                }
+            }
+        }
+    }
+
+
 }

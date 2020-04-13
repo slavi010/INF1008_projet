@@ -2,10 +2,16 @@ package vue;
 
 import model.Case;
 import model.Labyrinthe;
+import model.Liaison;
+import model.observer.Observer;
 
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * @author Nicolas Landry
+ * @author Sviatoslav Besnard
+ */
 public class Interface extends JFrame{
 
     private JPanel container = new JPanel();
@@ -14,61 +20,94 @@ public class Interface extends JFrame{
 
     private Labyrinthe labyrinthe;
 
-    public Interface(String name, int longeur, int largeur, Labyrinthe labyrinthe){
-        this.labyrinthe = labyrinthe;
-        this.setTitle(name);
-        this.setSize(longeur*45, largeur*45);
-        this.setResizable(true);
+    public Interface(String name, int longueur, int largeur, Labyrinthe labyrinthe){
+        try{
+            this.labyrinthe = labyrinthe;
+            this.setTitle(name);
+            this.setSize(longueur*45, largeur*45);
+            this.setResizable(true);
 
-        initComposant(longeur, largeur);
-        this.setContentPane(container);
+            initComposant(longueur, largeur);
+            this.setContentPane(container);
 
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        this.setVisible(true);
+            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            this.setVisible(true);
 
-        labyrinthe.setObserver((liaison) -> {
-            JLabel label = lab[liaison.getCase1().getX()*2 + (liaison.getCase2().getX() - liaison.getCase1().getX())]
-                    [liaison.getCase1().getY()*2 + (liaison.getCase2().getY() - liaison.getCase1().getY())];
-            label.setBackground(Color.darkGray);
-            label.setForeground(Color.lightGray);
-        });
+        /*
+        A chaque nouvelle liaison trouvée par l'algo de prim
+        update le label correspondant dans le UI
+         */
+            labyrinthe.setObserver(new Observer() {
+                @Override
+                public void onEvent1(Liaison liaison) {
+                    // nouvelle liaison solution
+                    JLabel label = lab[liaison.getCoordY()][liaison.getCoordX()];
+                    label.setBackground(Color.darkGray);
+                    label.setForeground(Color.lightGray);
+                }
+
+                @Override
+                public void onEvent2(Liaison liaison) {
+                    // nouvelle liaison possible
+                    JLabel label = lab[liaison.getCoordY()][liaison.getCoordX()];
+                    label.setBackground(Color.cyan);
+                }
+
+                @Override
+                public void onEvent3(Liaison liaison) {
+                    // liaison possible supprimé
+                    JLabel label = lab[liaison.getCoordY()][liaison.getCoordX()];
+                    label.setBackground(Color.white);
+                }
+
+                @Override
+                public void onEvent4(Liaison liaison) {
+                    // liaison possible supprimé
+                    JLabel label = lab[liaison.getCoordY()][liaison.getCoordX()];
+                    label.setBackground(Color.red);
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
-    private void initComposant(int longeur, int largeur){
+    private void initComposant(int longueur, int largeur){
         Font police = new Font("Arial", Font.BOLD, 20);
-        lab = new JLabel[longeur*2-1][largeur*2-1];
-        grille = new GridLayout(longeur*2-1, largeur*2-1);
+        lab = new JLabel[largeur*2-1][longueur*2-1];
+        grille = new GridLayout(largeur*2-1, longueur*2-1);
         container.setLayout(grille);
-        for(int i=0; i<((longeur*2)-1); i++){
-            for(int j=0; j<((largeur*2)-1); j++){
+        for(int y=0; y<((largeur*2)-1); y++){
+            for(int x=0; x<((longueur*2)-1); x++){
 
-                if(i%2==0 && j%2==0){
-                    lab[i][j] = new JLabel();
-                    container.add(lab[i][j]);
-                    lab[i][j].setOpaque(true);
-                    lab[i][j].setBackground(Color.BLACK);
+                if(y%2==0 && x%2==0){
+                    lab[y][x] = new JLabel();
+                    container.add(lab[y][x]);
+                    lab[y][x].setOpaque(true);
+                    lab[y][x].setBackground(Color.BLACK);
                 }else{
-                    if(i%2==1 && j%2==0){
-                        lab[i][j] = new JLabel(
-                                String.valueOf(labyrinthe.getCase(j/2, i/2).getValeurLiaison(Case.Direction.BAS))
+                    if(y%2==1 && x%2==0){
+                        lab[y][x] = new JLabel(
+                                String.valueOf(labyrinthe.getCase(x/2, y/2).getValeurLiaison(Case.Direction.BAS))
                         );
-                        container.add(lab[i][j]);
-                        lab[i][j].setOpaque(true);
+                        container.add(lab[y][x]);
+                        lab[y][x].setOpaque(true);
                     }
-                    if(j%2==1 && i%2==0){
-                        lab[i][j] = new JLabel(
-                                String.valueOf(labyrinthe.getCase(j/2, i/2).getValeurLiaison(Case.Direction.DROITE))
+                    if(x%2==1 && y%2==0){
+                        lab[y][x] = new JLabel(
+                                String.valueOf(labyrinthe.getCase(x/2, y/2).getValeurLiaison(Case.Direction.DROITE))
                         );
-                        container.add(lab[i][j]);
-                        lab[i][j].setOpaque(true);
+                        container.add(lab[y][x]);
+                        lab[y][x].setOpaque(true);
                     }
-                    if(i%2==1 && j%2==1){
-                        lab[i][j] = new JLabel();
-                        container.add(lab[i][j]);
-                        lab[i][j].setOpaque(true);
+                    if(y%2==1 && x%2==1){
+                        lab[y][x] = new JLabel();
+                        container.add(lab[y][x]);
+                        lab[y][x].setOpaque(true);
                     }
                 }
-                lab[i][j].setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                lab[y][x].setBorder(BorderFactory.createLineBorder(Color.BLACK));
             }
         }
     }

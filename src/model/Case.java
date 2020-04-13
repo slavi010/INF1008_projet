@@ -4,6 +4,7 @@ import model.data.Map;
 
 /**
  * Une case du {@link Labyrinthe}.
+ * @author Sviatoslav Besnard
  */
 public class Case implements Comparable<Case> {
     /**

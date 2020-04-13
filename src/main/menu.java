@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 /**
  * @author Nicolas Landry
+ * @author Marius Couet
  */
 public class menu {
     private int number;

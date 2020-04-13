@@ -11,8 +11,11 @@ import java.awt.*;
 /**
  * @author Nicolas Landry
  * @author Sviatoslav Besnard
+ * @author Marius Couet
  */
 public class Interface extends JFrame{
+
+    private static int nbOpertationInterface = 0;
 
     private JPanel container = new JPanel();
     private JLabel[][] lab;
@@ -80,7 +83,7 @@ public class Interface extends JFrame{
         container.setLayout(grille);
         for(int y=0; y<((largeur*2)-1); y++){
             for(int x=0; x<((longueur*2)-1); x++){
-
+                nbOpertationInterface += 1;
                 if(y%2==0 && x%2==0){
                     lab[y][x] = new JLabel();
                     container.add(lab[y][x]);
@@ -112,8 +115,7 @@ public class Interface extends JFrame{
         }
     }
 
-    /*public static void main(String[] args){
-        Interface i = new Interface("Labyrinthe", 7, 7);
+    public static int getNbOpertationInterface() {
+        return nbOpertationInterface;
     }
-*/
 }
